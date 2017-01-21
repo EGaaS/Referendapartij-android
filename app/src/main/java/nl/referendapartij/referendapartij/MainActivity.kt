@@ -2,14 +2,21 @@ package nl.referendapartij.referendapartij
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 
 class MainActivity : AppCompatActivity() {
 
+    private val TAG = this.javaClass.canonicalName
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        val action = intent.action
+        val data = intent.data
+        Log.d(TAG, "Action = $action, data $data")
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
