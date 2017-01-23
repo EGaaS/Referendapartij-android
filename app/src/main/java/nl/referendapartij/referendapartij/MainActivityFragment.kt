@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.Toast
 
 /**
  * A placeholder fragment containing a simple view.
@@ -21,6 +22,11 @@ class MainActivityFragment : Fragment() {
     private val TAG = this.javaClass.canonicalName
 
     var webView: WebView? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+    }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -38,8 +44,21 @@ class MainActivityFragment : Fragment() {
         settings?.setSupportZoom(true)
         webView?.clearHistory()
         webView?.clearFormData()
-        webView?.loadUrl(POOL)
         webView?.setWebViewClient(CustomWebClient())
+
+        if (arguments == null) {
+            webView?.loadUrl(POOL)
+            return view
+        }
+
+        val key = arguments["key"] as String?
+
+        if (key != null) {
+            val url = "http://egaas.$DOMAIN/?key=$key"
+            Toast.makeText(context, "Loading $url", Toast.LENGTH_LONG)
+                    .show()
+            webView?.loadUrl(url)
+        }
 
         return view
     }
