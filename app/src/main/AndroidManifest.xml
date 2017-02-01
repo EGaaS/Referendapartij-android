@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="com.android.vending.BILLING" />
 
     <application
         android:allowBackup="true"
@@ -22,27 +23,30 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <data
-                    android:scheme="referendapartij"
                     android:host="registration"
-                    />
+                    android:scheme="referendapartij" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <data
-                    android:scheme="http"
                     android:host="www.referendapartij.nl"
                     android:pathPrefix="/registration"
-                    />
+                    android:scheme="http" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
-        </activity>1
+        </activity>
+        1
+        <activity android:name=".BillingActivity"></activity>
     </application>
 
 </manifest>
