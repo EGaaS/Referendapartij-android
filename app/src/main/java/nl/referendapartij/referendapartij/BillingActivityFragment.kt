@@ -55,8 +55,10 @@ class BillingActivityFragment : Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
             Log.d(TAG, "Successfully purchased")
+            activity.setResult(MainActivityFragment.PURCHASE_RESULT_OK)
         } else {
             Log.d(TAG, "Couldn't purchased the item. Return code is $resultCode")
+            activity.setResult(MainActivityFragment.PURCHASE_RESULT_FAIL)
         }
     }
 

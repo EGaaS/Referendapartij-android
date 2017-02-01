@@ -22,6 +22,7 @@ class MainActivityFragment : Fragment() {
     private val TAG = this.javaClass.canonicalName
 
     var webView: WebView? = null
+    var schema = "https"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,7 +34,33 @@ class MainActivityFragment : Fragment() {
         val view = inflater!!.inflate(R.layout.fragment_main, container, false)
 
         webView = view.findViewById(R.id.main_web_view) as WebView
+        setupWebView()
 
+        if (arguments == null) {
+            webView?.loadUrl(POOL)
+            return view
+        }
+
+        val key = arguments["key"] as String?
+
+        if (key != null) {
+            val url = "$schema://egaas.$DOMAIN/?key=$key"
+            Toast.makeText(context, "Loading $url", Toast.LENGTH_LONG)
+                    .show()
+            webView?.loadUrl(url)
+        }
+
+        return view
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == PURCHASE_RESULT_OK) {
+            webView?.loadUrl("$schema://egaas.$DOMAIN/payment?result=ok")
+        }
+    }
+
+    fun setupWebView() {
         val settings = webView?.settings
         settings?.javaScriptEnabled = true
         settings?.allowFileAccessFromFileURLs = true
@@ -45,25 +72,11 @@ class MainActivityFragment : Fragment() {
         webView?.clearHistory()
         webView?.clearFormData()
         webView?.setWebViewClient(CustomWebClient())
-
-        if (arguments == null) {
-            webView?.loadUrl(POOL)
-            return view
-        }
-
-        val key = arguments["key"] as String?
-
-        if (key != null) {
-            val url = "http://egaas.$DOMAIN/?key=$key"
-            Toast.makeText(context, "Loading $url", Toast.LENGTH_LONG)
-                    .show()
-            webView?.loadUrl(url)
-        }
-
-        return view
     }
 
     companion object {
+        val PURCHASE_RESULT_OK = 666
+        val PURCHASE_RESULT_FAIL = 777
         val DOMAIN = "referendapartij.nl"
         val POOL = "http://signup.referendapartij.nl/"
     }
@@ -76,9 +89,16 @@ class MainActivityFragment : Fragment() {
                 poolName = url
             }
             Log.d(TAG, view.url + "->" + url)
-            if (!url.contains(DOMAIN, true)) {
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                startActivity(intent)
+
+            when {
+                url.contains(DOMAIN, true) && url.contains("payment", true) -> {
+                    val intent = Intent(activity, BillingActivity().javaClass)
+                    startActivity(intent)
+                }
+                !url.contains(DOMAIN, true) -> {
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                    startActivityForResult(intent, PURCHASE_RESULT_OK)
+                }
             }
         }
 
